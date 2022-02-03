@@ -1,4 +1,4 @@
-﻿
+
 #region COMPUTERLIEBE (DIE MODULE SPIEL'N VERRÜCKT)
 #COMPUTERLOVE (THE MODULES ARE GOING CRAZY)
 # PowerShell logistics
@@ -40,7 +40,7 @@ Get-Mailbox | Get-MailboxAutoReplyConfiguration -ResultSize unlimited
 Get-EXOMailbox -PropertySets Quota |select PrimarySmtpAddress,ProhibitSendQuota,ArchiveQuota
 
 #Show quotas, size limits and recipient limits for a particular user
-Get-Mailbox -Identity kim.wilde@kraichgau-touristik.de | select *quota*, *size*, *limit*
+Get-Mailbox -Identity xx.xxx@xxxx.de | select *quota*, *size*, *limit*
 
 #Show Mailbox send/receive limits
 Get-EXOMailbox -PropertySets Delivery | select PrimarySmtpAddress,MaxSendSize,MaxReceiveSize,RecipientLimits
@@ -78,7 +78,7 @@ Get-EXOMailbox -ResultSize Unlimited |Foreach{
 Get-EXOMailboxStatistics -PropertySets All -Identity $_.UserPrincipalName | Select DisplayName,LastLogonTime,LastUserActionTime} |Sort-Object LastLogonTime -Descending
 
 #Show mailbox statistic for specific user
-Get-EXOMailboxStatistics -Identity kim.wilde -PropertySets All
+Get-EXOMailboxStatistics -Identity xx.xx -PropertySets All
 
 #Show mailboxes with configured forwarding addresses
 
@@ -86,10 +86,10 @@ Get-EXOMailbox -ResultSize Unlimited| where {$_.ForwardingAddress -ne $null} | s
 Get-Mailbox -ResultSize Unlimited | Where-Object {$_.ForwardingAddress -ne $null} | Select-Object Name, @{Expression={$_.ForwardingAddress};Label="Forwarded to"}, @{Expression={$_.DeliverToMailboxAndForward};Label="Mailbox & Forward"}
 
 #Show all group memberships for a specific user
-Get-Recipient -Filter "Members -eq 'CN=kim.wilde,OU=scriptrunner1.onmicrosoft.com,OU=Microsoft Exchange Hosted Organizations,DC=EURPR02A007,DC=prod,DC=outlook,DC=com'" | Select-Object Displayname, RecipientType, WhenCreated, PrimarySmtpAddress
+Get-Recipient -Filter "Members -eq 'CN=xx.xxxx,OU=xxx.onmicrosoft.com,OU=Microsoft Exchange Hosted Organizations,DC=EURPR02A007,DC=prod,DC=outlook,DC=com'" | Select-Object Displayname, RecipientType, WhenCreated, PrimarySmtpAddress
 
 #Show all groups managed by a specific user
-Get-Recipient -Filter "ManagedBy -eq 'CN=kim.wilde,OU=scriptrunner1.onmicrosoft.com,OU=Microsoft Exchange Hosted Organizations,DC=EURPR02A007,DC=prod,DC=outlook,DC=com'" -RecipientTypeDetails GroupMailbox,MailUniversalDistributionGroup,MailUniversalSecurityGroup,DynamicDistributionGroup | Select-Object Displayname, RecipientType, WhenCreated
+Get-Recipient -Filter "ManagedBy -eq 'CN=xxx.xx,OU=xxxx.onmicrosoft.com,OU=Microsoft Exchange Hosted Organizations,DC=EURPR02A007,DC=prod,DC=outlook,DC=com'" -RecipientTypeDetails GroupMailbox,MailUniversalDistributionGroup,MailUniversalSecurityGroup,DynamicDistributionGroup | Select-Object Displayname, RecipientType, WhenCreated
 
 #Show Mail traffic report
 Get-MailTrafficReport
@@ -112,8 +112,8 @@ Get-MessageTrace -StartDate ((Get-Date).AddDays(-10)) -EndDate (Get-Date) | Wher
 # Manage Mailbox Quotas
 
 # Set quotas for specific user
-Set-Mailbox kim.wilde@kraichgau-touristik.de -ProhibitSendQuota 2GB -ProhibitSendReceiveQuota 2GB -IssueWarningQuota 1GB #-WhatIf
-Get-Mailbox -Identity kim.wilde@kraichgau-touristik.de | select *quota*, *size*, *limit*
+Set-Mailbox xxx@xxx.de -ProhibitSendQuota 2GB -ProhibitSendReceiveQuota 2GB -IssueWarningQuota 1GB #-WhatIf
+Get-Mailbox -Identity xxx.xxx@xxxxx.de | select *quota*, *size*, *limit*
 
 # Set quotas for all users
 Get-Mailbox | Set-Mailbox -ProhibitSendQuota 2GB -ProhibitSendReceiveQuota 2GB -IssueWarningQuota 1GB
@@ -177,16 +177,16 @@ Get-CalendarProcessing -Identity  | Where {$_.ResourceType -eq "Room"} | Format-
 # Managing Out of Office notifications
 
 #Show existing Autoreply notification settings
-Get-MailboxAutoReplyConfiguration -Identity bryan.adams@kraichgau-touristik.de
+Get-MailboxAutoReplyConfiguration -Identity xxxx.xxxx@xxxxx.de
 
 Get-Mailbox | Get-MailboxAutoReplyConfiguration -ResultSize unlimited
 Get-Mailbox | Get-MailboxAutoReplyConfiguration -ResultSize unlimited |Out-GridView
 
 #Set OOF for one user
-Set-MailboxAutoReplyConfiguration -Identity bryan.adams@kraichgau-touristik.de -AutoReplyState Enabled -ExternalMessage "Our current tour is canceled. I'm working from home at the moment. Stay healthy." -InternalMessage "Our current tour is canceled. I'm working from home at the moment. Stay healthy."m
+Set-MailboxAutoReplyConfiguration -Identity xxx.xx@xxx.de -AutoReplyState Enabled -ExternalMessage "Our current tour is canceled. I'm working from home at the moment. Stay healthy." -InternalMessage "Our current tour is canceled. I'm working from home at the moment. Stay healthy."m
 
 #Set OOF in O365 with start and end date for one user
-Set-MailboxAutoReplyConfiguration -Identity bryan.adams@kraichgau-touristik.de -AutoReplyState Schedule -StartTime "4/22/2022 08:00:00" -EndTime "6/15/2022 17:00:00" -ExternalMessage "Our current tour is canceled. I'm working from home at the moment. Stay healthy." -InternalMessage "Our current tour is canceled. I'm working from home at the moment. Stay healthy."
+Set-MailboxAutoReplyConfiguration -Identity xxx.xxx@xxxx.de -AutoReplyState Schedule -StartTime "4/22/2022 08:00:00" -EndTime "6/15/2022 17:00:00" -ExternalMessage "Our current tour is canceled. I'm working from home at the moment. Stay healthy." -InternalMessage "Our current tour is canceled. I'm working from home at the moment. Stay healthy."
 
 
 #Set OOF in O365 with start and end date (mutiple users)
@@ -238,7 +238,7 @@ Import-Csv "C:\temp\DeleteTheseMailboxes.csv" | ForEach-Object {
 }
 
 #Remove specific user from all distribution groups
-$email = "peter.gabriel@kraichgau-touristik.de"
+$email = "xxx.xxx@xxxx.de"
 $mailbox = Get-Mailbox -Identity $email
 $DN=$mailbox.DistinguishedName
 $Filter = "Members -like ""$DN"""
@@ -256,5 +256,22 @@ $password = "xxxxxx"
 $sstr = ConvertTo-SecureString -string $password -AsPlainText -Force
 $cred = New-Object System.Management.Automation.PSCredential -argumentlist $username, $sstr
 $body = "This is a test email"
-Send-MailMessage -To "kim.wilde@kraichgau-touristik.de" -from "hbrenn@scriptrunner1.onmicrosoft.com" -Subject 'Test message' -Body $body -BodyAsHtml -smtpserver smtp.office365.com -usessl -Credential $cred -Port 587
+Send-MailMessage -To "xxx@xxxxx.de" -from "xxx@xxxx.onmicrosoft.com" -Subject 'Test message' -Body $body -BodyAsHtml -smtpserver smtp.office365.com -usessl -Credential $cred -Port 587
+#endregion
+
+#region SHOW ME THE WAY - PETER FRAMPTON
+# Get help and additional ressources
+
+#Microsoft Exchange PowerShell cheat-sheet
+https://lp.scriptrunner.com/en/exchange-cheat-sheet
+
+#Ready-to-use PowerShell scripts for Microsoft Exchange use cases
+Start-Process "https://github.com/scriptrunner/ActionPacks/tree/master/Exchange"
+
+#Ready-to-use PowerShell scripts for Microsoft Exchange Online use cases
+Start-Process "https://github.com/scriptrunner/ActionPacks/tree/master/O365/ExchangeOnline"
+
+#8-page Cheat Sheet for Microsoft Teams PowerShell Module
+Start-Process "https://lp.scriptrunner.com/en/teams-cheat-sheet"
+
 #endregion
