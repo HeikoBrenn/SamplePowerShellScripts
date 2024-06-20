@@ -216,3 +216,98 @@ $matches = Get-MatchData -competitionId $competitionId
 Show-GamesWithMostGoals -matches $matches -top 10
 
 #################################################################################################
+# SHOW TABLE OF TOTAL NUMBER OF GOALS SCORED BY EACH TEAM
+#################################################################################################
+
+# Define the API endpoint and your API key
+$apiBaseUrl = "https://api.football-data.org/v2"
+$apiKey = "your api key here"
+
+# Set the headers
+$headers = @{
+    "X-Auth-Token" = $apiKey
+}
+
+# Function to fetch match data
+function Get-MatchData {
+    param (
+        [string]$competitionId = "EC"
+    )
+    $url = "$apiBaseUrl/competitions/$competitionId/matches"
+    $response = Invoke-RestMethod -Uri $url -Headers $headers
+    return $response.matches
+}
+
+# Function to calculate total goals scored by each team
+function Calculate-TeamGoals {
+    param (
+        [array]$matches
+    )
+
+    # Create a hashtable to store total goals for each team
+    $teamGoals = @{}
+
+    # Loop through each match and calculate goals
+    $matches | ForEach-Object {
+        $homeTeam = $_.homeTeam.name
+        $awayTeam = $_.awayTeam.name
+        $homeGoals = $_.score.fullTime.homeTeam
+        $awayGoals = $_.score.fullTime.awayTeam
+
+        # Ensure team names are not null or empty
+        if (![string]::IsNullOrWhiteSpace($homeTeam)) {
+            # Add goals to home team
+            if ($teamGoals.ContainsKey($homeTeam)) {
+                $teamGoals[$homeTeam] += $homeGoals
+            } else {
+                $teamGoals[$homeTeam] = $homeGoals
+            }
+        }
+
+        if (![string]::IsNullOrWhiteSpace($awayTeam)) {
+            # Add goals to away team
+            if ($teamGoals.ContainsKey($awayTeam)) {
+                $teamGoals[$awayTeam] += $awayGoals
+            } else {
+                $teamGoals[$awayTeam] = $awayGoals
+            }
+        }
+    }
+
+    # Convert hashtable to custom objects for display
+    $teamGoalsList = $teamGoals.GetEnumerator() | ForEach-Object {
+        [PSCustomObject]@{
+            Team       = $_.Key
+            TotalGoals = $_.Value
+        }
+    }
+
+    return $teamGoalsList
+}
+
+# Function to display team goals as a table
+function Show-TeamGoals {
+    param (
+        [array]$teamGoals
+    )
+
+    # Display the team goals as a table
+    $teamGoals | Sort-Object -Property TotalGoals -Descending | Format-Table -AutoSize
+}
+
+# Script execution starts here
+
+# Specify the competition ID (example: "EC" for European Championship)
+$competitionId = "EC"  # Replace with the actual competition ID if needed
+
+# Fetch match data
+$matches = Get-MatchData -competitionId $competitionId
+
+# Calculate total goals scored by each team
+$teamGoals = Calculate-TeamGoals -matches $matches
+
+# Show the total goals scored for each team as a table
+Show-TeamGoals -teamGoals $teamGoals
+
+
+
