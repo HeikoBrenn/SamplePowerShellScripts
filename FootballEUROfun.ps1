@@ -1,10 +1,15 @@
+################################################################
+# The examples below require an api key from football-data.org #
+################################################################
+
+
 #################################################################
 #SHOW ALL GAMES IN TABLE FORMAT INCLUDING GROUPS AND DATES
 #################################################################
 
 # Define the API endpoint and your API key
 $apiUrl = "https://api.football-data.org/v2/competitions/EC/matches"
-$apiKey = "475cd19a94e747ec9dc803d6afac868f"
+$apiKey = "Your api key here"
 
 # Set the headers
 $headers = @{
@@ -32,17 +37,13 @@ $matches = $response.matches | ForEach-Object {
 # Display the data in a table format
 $matches | Format-Table -AutoSize
 
-#endregion
-
-
-
 #############################################################################################
 #SHOW GAMES BASED ON STATUS IN TABLE FORMAT INCLUDING GROUP AND DATE
 #############################################################################################
 
 # Define the API endpoint and your API key
 $apiBaseUrl = "https://api.football-data.org/v2"
-$apiKey = "475cd19a94e747ec9dc803d6afac868f"
+$apiKey = "Your api key here"
 
 # Set the headers
 $headers = @{
@@ -96,12 +97,6 @@ param (
 $matches = Get-MatchData -status $matchStatus
 Display-MatchData -matches $matches
 
-
-
-
-
-
-
 #############################################################################################
 #SHOW TOP 10 SCORERS IN TABLE FORMAT
 #############################################################################################
@@ -109,7 +104,7 @@ Display-MatchData -matches $matches
 
 # Define the API endpoint and your API key
 $apiBaseUrl = "https://api.football-data.org/v2"
-$apiKey = "475cd19a94e747ec9dc803d6afac868f"
+$apiKey = "Your api key here"
 
 # Set the headers
 $headers = @{
