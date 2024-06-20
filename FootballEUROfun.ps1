@@ -149,3 +149,70 @@ $topScorers = Get-TopScorers
 # Show top 10 scorers
 Show-TopScorers -scorers $topScorers
 
+#############################################################################################
+#SHOW TOP 10 GAMES THE MOST GOALS SCORED AS A TABLE
+#############################################################################################
+
+# Define the API endpoint and your API key
+$apiBaseUrl = "https://api.football-data.org/v2"
+$apiKey = "your api key here"
+
+
+# Set the headers
+$headers = @{
+    "X-Auth-Token" = $apiKey
+}
+
+# Function to fetch match data
+function Get-MatchData {
+    param (
+        [string]$competitionId = "EC"
+    )
+    $url = "$apiBaseUrl/competitions/$competitionId/matches"
+    $response = Invoke-RestMethod -Uri $url -Headers $headers
+    return $response.matches
+}
+
+# Function to display games with the most goals scored as a table
+function Show-GamesWithMostGoals {
+    param (
+        [array]$matches,
+        [int]$top = 10
+    )
+
+    # Create an array of custom objects with match details and total goals
+    $matchDetails = $matches | ForEach-Object {
+        [PSCustomObject]@{
+            Date       = (Get-Date $_.utcDate).ToString("yyyy-MM-dd")
+            WeekDay    = (Get-Date $_.utcDate).DayOfWeek
+            Group      = $_.group
+            HomeTeam   = $_.homeTeam.name
+            HomeGoals  = $_.score.fullTime.homeTeam
+            AwayTeam   = $_.awayTeam.name
+            AwayGoals  = $_.score.fullTime.awayTeam
+            TotalGoals = ($_.score.fullTime.homeTeam + $_.score.fullTime.awayTeam)
+        }
+    }
+
+    # Sort matches by the total number of goals in descending order
+    $sortedMatches = $matchDetails | Sort-Object -Property TotalGoals -Descending
+
+    # Select the top matches
+    $topMatches = $sortedMatches | Select-Object -First $top
+
+    # Display the matches as a table
+    $topMatches | Format-Table -AutoSize
+}
+
+# Script execution starts here
+
+# Specify the competition ID (example: "EC" for European Championship)
+$competitionId = "EC"  # Replace with the actual competition ID if needed
+
+# Fetch match data
+$matches = Get-MatchData -competitionId $competitionId
+
+# Show the top games with the most goals scored
+Show-GamesWithMostGoals -matches $matches -top 10
+
+#################################################################################################
